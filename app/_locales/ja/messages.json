@@ -1,0 +1,14 @@
+{
+  "appName": {
+    "message": "川口ゴミカレンダー便利ツール",
+    "description": "埼玉県川口市のゴミカレンダーを見やすくします。"
+  },
+  "appShortName": {
+    "message": "川口ゴミ便利ツール",
+    "description": "川口ゴミカレンダーを見やすくします"
+  },
+  "appDescription": {
+    "message": "埼玉県川口市のWebゴミカレンダーを見やすくします。",
+    "description": "埼玉県川口市のWebゴミカレンダーで今日の日付を強調表示します。"
+  }
+}

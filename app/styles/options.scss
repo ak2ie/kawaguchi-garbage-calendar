@@ -1,0 +1,65 @@
+div.colors {
+    font-size: 5em;
+
+    a {
+        width: 50px;
+        height: 50px;
+        display: inline-block;
+        position: relative;
+        border-radius: 4px;
+        color: #fff;
+        line-height: 52px;
+        -webkit-transition: none;
+        transition: none;
+
+        &:active {
+            top: 3px;
+            box-shadow: none;
+        }
+    }
+}
+
+// 設定保存メッセージ表示欄
+div#status {
+    height: 50px;
+}
+
+/*
+ * カレンダーとオプションのボタン背景色
+ *
+ * ・タグなし：カレンダーとボタン共用
+ * ・aタグ：ボタン専用
+ */
+.kawaguchi-garbage-calendar-red {
+    background-color: #F8BBD0;
+}
+
+a.kawaguchi-garbage-calendar-red {
+    box-shadow: 0 3px 0 #F48FB1;
+}
+
+.kawaguchi-garbage-calendar-yellow {
+    background-color: #FFF9C4;
+}
+
+a.kawaguchi-garbage-calendar-yellow {
+    box-shadow: 0 3px 0 #FFEB3B;
+}
+
+.kawaguchi-garbage-calendar-blue {
+    background-color: #BBDEFB;
+}
+
+a.kawaguchi-garbage-calendar-blue {
+    box-shadow: 0 3px 0 #4FC3F7;
+}
+
+.kawaguchi-garbage-calendar-green {
+    background-color: #B2DFDB;
+}
+
+a.kawaguchi-garbage-calendar-green {
+    box-shadow: 0 3px 0 #80CBC4;
+}
+
+  
