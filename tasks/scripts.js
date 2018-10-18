@@ -7,6 +7,7 @@ import gulpWebpack from 'webpack-stream'
 import plumber from 'gulp-plumber'
 import livereload from 'gulp-livereload'
 import args from './lib/args'
+var WebpackClearConsole = require("webpack-clear-console").WebpackClearConsole;
 
 const ENV = args.production ? 'production' : 'development'
 
@@ -32,7 +33,8 @@ gulp.task('scripts', (cb) => {
         new webpack.DefinePlugin({
           'process.env.NODE_ENV': JSON.stringify(ENV),
           'process.env.VENDOR': JSON.stringify(args.vendor)
-        })
+        }),
+        new WebpackClearConsole()
       ].concat(args.production ? [
         new webpack.optimize.UglifyJsPlugin(),
         new webpack.optimize.ModuleConcatenationPlugin()

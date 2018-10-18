@@ -54,6 +54,7 @@
     "gulp-sourcemaps": "^2.x.x",
     "gulp-strip-debug": "^3.0.0",
     "gulp-tag-version": "1.x.x",
+    "gulp-uglify": "^3.0.1",
     "gulp-util": "3.x.x",
     "gulp-zip": "^4.x.x",
     "jest": "^23.6.0",
@@ -65,6 +66,7 @@
     "tslint": "^5.x.x",
     "vinyl-named": "1.x.x",
     "webpack": "3.x.x",
+    "webpack-clear-console": "^1.0.3",
     "webpack-stream": "3.x.x",
     "yargs": "^8.x.x"
   }

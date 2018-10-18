@@ -9,13 +9,17 @@ import * as toastr from 'toastr';
  *   メイン処理
  * ------------------------------------------
  */
+
 const pageTitleElement = <HTMLElement>document.getElementsByClassName('calenderTitle')[0];
 const pageTitle: string = pageTitleElement.innerText;
 const calendar: HTMLTableElement = <HTMLTableElement>document.getElementsByClassName('calendarTable')[0];
 
 let contentScripts = new GarbageCalendar(pageTitle, calendar);
-contentScripts.highlightToday();
-
+try {
+    contentScripts.highlightToday();
+} catch (e) {
+    console.error(e);
+}
 
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     switch (request.action) {
@@ -36,8 +40,8 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
  * ------------------------------------------
  */
 function notifyFeature() {
-    const message: {[key: string]: string} = {
-        '0.1.0': 'カレンダーの背景色を変更できるようになりました。詳しくは<a href="#" id="open-option-page" style="text-decoration: underline;">設定ページ</a>をご覧ください。'
+    const message: { [key: string]: string } = {
+        '0.1.1': 'カレンダーの背景色を変更できるようになりました。詳しくは<a href="#" id="open-option-page" style="text-decoration: underline;">設定ページ</a>をご覧ください。'
     };
 
     toastr.options.closeButton = true;
@@ -60,7 +64,7 @@ function notifyFeature() {
     const openOptionLink = document.getElementById('open-option-page');
     if (openOptionLink !== null) {
         openOptionLink.addEventListener('click', () => {
-            chrome.runtime.sendMessage({action: 'openOptionPage'}, function(response) {
+            chrome.runtime.sendMessage({ action: 'openOptionPage' }, function (response) {
             });
         });
     }
@@ -75,7 +79,7 @@ chrome.storage.sync.get('isFirstShow', (result) => {
             notifyFeature();
 
             // 機能紹介を表示済であることを記録
-            chrome.storage.sync.set({isFirstShow: {[currentVersion]: false}}, () => {});
+            chrome.storage.sync.set({ isFirstShow: { [currentVersion]: false } }, () => { });
         }
     }
 });

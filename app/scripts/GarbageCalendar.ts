@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 export class GarbageCalendar {
     private pageTitle: string;
     private calender: HTMLTableElement;
@@ -8,18 +10,8 @@ export class GarbageCalendar {
     }
 
     public async highlightToday() {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth() + 1;
-        const date = today.getDate().toString();
-
-        let title: string = '';
-        // 月表示は2文字になるようスペース埋めされるため対応
-        if (month.toString().length === 1) {
-             title = year + '年 ' + month + '月';
-        } else {
-            title = year + '年' + month + '月';
-        }
+        const date = moment(new Date()).format('D');
+        let title: string = moment(new Date()).format('YYYY年MM月');
 
         const page_title = this.getPageTitle();
 
@@ -71,7 +63,7 @@ export class GarbageCalendar {
     private isTodaysCell(cell: HTMLTableCellElement, date: string): boolean {
         // カレンダーの日付
         // （日付+回収対象のゴミの名前 の形式で取得できるため、日付のみを抽出）
-        const pageDateStr = cell.innerText.split(/\r\n|\r|\n/)[0];
+        const pageDateStr = cell.innerText.split(/\r\n|\r|\n/)[0].trim();
 
         if (pageDateStr === date) {
             return true;
