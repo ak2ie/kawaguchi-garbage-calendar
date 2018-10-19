@@ -3,7 +3,12 @@
 これはChrome拡張を修正後、WebStoreで公開するまでの手順をまとめたものです。
 
 # バージョンアップ
-Chrome 拡張の`manifest.json`に書かれているバージョンを上げる。
+修正度合いに応じて、コマンドによりバージョンアップする。
+```
+ *     gulp patch     # makes v0.1.0 → v0.1.1
+ *     gulp feature   # makes v0.1.1 → v0.2.0
+ *     gulp release   # makes v0.2.1 → v1.0.0
+ ```
 
 # 機能紹介のテキストを書く
 この拡張はインストールまたはバージョンアップ後に、川口市のゴミカレンダーを開くと、追加機能の紹介を表示する。
@@ -34,8 +39,14 @@ message = {
 npm run build
 ```
 
-# zip圧縮する
-下記のフォルダを右クリックし、Windowsの標準機能からZip圧縮する
+# アップロードファイルを確認
+下記のフォルダに、アップロードするzipファイルが出力されたことを確認する。
+ - `packages`
+
+`kawaguchi-garbage-calendar-<バージョン>-chrome.zip`が存在することを確認する。
+
+
+もし出力されていなければ、下記のフォルダを右クリックし、Windowsの標準機能からZip圧縮する
 
  - `dist/chrome`
 

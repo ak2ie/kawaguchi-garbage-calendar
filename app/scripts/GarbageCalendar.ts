@@ -1,46 +1,67 @@
 import * as moment from 'moment';
+import { stringify } from 'querystring';
 
 export class GarbageCalendar {
     private pageTitle: string;
     private calender: HTMLTableElement;
 
-    public constructor(pageTitle: string, calendar: HTMLTableElement) {
-        this.pageTitle = pageTitle;
-        this.calender = calendar;
-    }
-
     public async highlightToday() {
-        const date = moment(new Date()).format('D');
-        let title: string = moment(new Date()).format('YYYY年MM月');
+        try {
+            const SEPTEMBER = 8;
+            const today = new Date();
+            const date = moment(today).format('D');
+            let title: string = moment(today).format('YYYY年');
+            if (moment(today).month() <= SEPTEMBER) {
+                // 「月」をスペース埋め
+                title += ' ';
+            }
+            title += moment(today).format('M月');
 
-        const page_title = this.getPageTitle();
+            const page_title = this.getPageTitle();
 
-        if (title === page_title) {
-            const calendar = this.getCalendar();
+            if (title === page_title) {
+                const calendar = this.getCalendar();
 
-            for (let i = 0; i < calendar.rows.length; i++) {
-                const row = calendar.rows[i].cells;
-                for (let k = 0; k < row.length; k++) {
-                    const cell = <HTMLTableCellElement>row[k];
-                    if (this.isTodaysCell(cell, date)) {
-                        await this.highlightCell(cell);
+                for (let i = 0; i < calendar.rows.length; i++) {
+                    const row = calendar.rows[i].cells;
+                    for (let k = 0; k < row.length; k++) {
+                        const cell = <HTMLTableCellElement>row[k];
+                        if (this.isTodaysCell(cell, date)) {
+                            await this.highlightCell(cell);
+                        }
                     }
                 }
             }
+        } catch (e) {
+            this.reportError();
         }
     }
 
     private getPageTitle(): string {
-        return this.pageTitle;
+        const pageTitleElement = <HTMLElement>document.getElementsByClassName('calenderTitle')[0];
+        let pageTitle = <string>pageTitleElement.innerHTML;
+
+        if (pageTitle === null || pageTitle === undefined || pageTitle.trim() === '') {
+            throw new Error('年月の取得に失敗');
+        }
+
+        pageTitle = pageTitle.trim();
+
+        return pageTitle;
     }
 
     private getCalendar(): HTMLTableElement {
-        return this.calender;
+        const calendar = <HTMLTableElement>document.getElementsByClassName('calendarTable')[0];
+
+        if (calendar === null) {
+            throw new Error('カレンダー要素取得に失敗');
+        }
+
+        return calendar;
     }
 
     private async highlightCell(cell: HTMLTableCellElement) {
         const color = await this.loadSetting();
-        console.log(color);
 
         // すでに設定されているクラスを除去
         for (let index = 0; index < cell.classList.length; index++) {
@@ -53,7 +74,6 @@ export class GarbageCalendar {
 
         if (color.backgroundColor !== null && color.backgroundColor !== undefined) {
             cell.classList.add(color.backgroundColor);
-            console.log(color.backgroundColor);
         } else {
             // 背景色が未設定の場合
             cell.classList.add('kawaguchi-garbage-calendar-yellow');
@@ -63,9 +83,13 @@ export class GarbageCalendar {
     private isTodaysCell(cell: HTMLTableCellElement, date: string): boolean {
         // カレンダーの日付
         // （日付+回収対象のゴミの名前 の形式で取得できるため、日付のみを抽出）
-        const pageDateStr = cell.innerText.split(/\r\n|\r|\n/)[0].trim();
+        const dateRegexp = /([0-9]+)[<.]*/;
+        const pageDateStr = dateRegexp.exec(cell.innerHTML);
 
-        if (pageDateStr === date) {
+        if (pageDateStr === null || pageDateStr.length <= 1) {
+            // 日付のセルでない場合
+            return false;
+        } else if (pageDateStr[1] === date) {
             return true;
         } else {
             return false;
@@ -76,10 +100,22 @@ export class GarbageCalendar {
         return new Promise<Setting>((resolve, reject) => {
             let setting = new Setting();
 
-            chrome.storage.sync.get('backgroundColor', function(result) {
+            chrome.storage.sync.get('backgroundColor', function (result: { [key: string]: string }) {
                 setting.backgroundColor = result.backgroundColor;
                 resolve(setting);
             });
+        });
+    }
+
+    private reportError() {
+        chrome.tabs.query({
+            url: 'http://kawaguchi-gomimaru.jp/calendar/*'
+        }, (tabs) => {
+            if (tabs.length >= 1 && 'id' in tabs[0] && tabs[0].id !== undefined) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    type: 'ERROR'
+                });
+            }
         });
     }
 }
