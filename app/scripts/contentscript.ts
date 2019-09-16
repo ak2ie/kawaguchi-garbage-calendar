@@ -12,6 +12,7 @@ import * as toastr from 'toastr';
 let contentScripts = new GarbageCalendar();
 try {
     contentScripts.highlightToday();
+    contentScripts.colorizeHoliday();
 } catch (e) {
     console.error(e);
 }
@@ -37,7 +38,8 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 function notifyFeature() {
     const message: { [key: string]: string } = {
         '0.1.1': 'カレンダーの背景色を変更できるようになりました。詳しくは<a href="#" id="open-option-page" style="text-decoration: underline;">設定ページ</a>をご覧ください。',
-        '0.1.3': 'カレンダーが強調表示されない場合がある問題を修正しました。'
+        '0.1.3': 'カレンダーが強調表示されない場合がある問題を修正しました。',
+        '0.1.4': 'カレンダーが強調表示されない場合がある問題を修正しました。'
     };
 
     toastr.options.closeButton = true;
@@ -66,7 +68,7 @@ function notifyFeature() {
     }
 }
 
-chrome.storage.sync.get('isFirstShow', (result) => {
+chrome.storage.sync.get('isFirstShow', (result: {[key: string]: {[key: string]: boolean}}) => {
     const manifest = chrome.runtime.getManifest();
     const currentVersion = manifest.version;
 

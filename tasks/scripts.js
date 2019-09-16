@@ -7,17 +7,9 @@ import gulpWebpack from 'webpack-stream'
 import plumber from 'gulp-plumber'
 import livereload from 'gulp-livereload'
 import args from './lib/args'
-var WebpackClearConsole = require("webpack-clear-console").WebpackClearConsole;
+import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 
 const ENV = args.production ? 'production' : 'development'
-
-const strips = [
-  'console.log',
-  'console.info',
-  'console.warn',
-  'console.error',
-  'console.assert',
-].map(strip => `strip[]=${strip}`).join(',');
 
 gulp.task('scripts', (cb) => {
   return gulp.src(['app/scripts/*.js', 'app/scripts/*.ts'])
@@ -27,28 +19,22 @@ gulp.task('scripts', (cb) => {
     }))
     .pipe(named())
     .pipe(gulpWebpack({
+      mode: ENV,
       devtool: args.sourcemaps ? 'inline-source-map' : false,
       watch: args.watch,
       plugins: [
         new webpack.DefinePlugin({
           'process.env.NODE_ENV': JSON.stringify(ENV),
           'process.env.VENDOR': JSON.stringify(args.vendor)
-        }),
-        new WebpackClearConsole()
+        })
       ].concat(args.production ? [
-        new webpack.optimize.UglifyJsPlugin(),
         new webpack.optimize.ModuleConcatenationPlugin()
       ] : []),
       module: {
         rules: [
           {
             test: /\.ts$/,
-            loader: 'ts-loader',
-            exclude: /node_modules/
-          },
-          {
-            test: /\.ts$/,
-            loader: (ENV === 'development' ? [] : [`strip-loader?${strips}`]),
+            loader: ['ts-loader'],
             exclude: /node_modules/
           }
         ]
@@ -59,6 +45,19 @@ gulp.task('scripts', (cb) => {
           'node_modules/',
           'app/scripts/'
         ]
+      },
+      optimization: {
+        minimizer: ENV === 'development'
+        ? []
+        : [
+            new UglifyJSPlugin({
+              uglifyOptions: {
+                compress: {
+                  drop_console: true
+                }
+              }
+            })
+          ]
       }
     },
     webpack,
@@ -73,4 +72,4 @@ gulp.task('scripts', (cb) => {
     }))
     .pipe(gulp.dest(`dist/${args.vendor}/scripts`))
     .pipe(gulpif(args.watch, livereload()))
-})
+});
