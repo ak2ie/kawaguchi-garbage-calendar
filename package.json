@@ -40,7 +40,7 @@
     "chromereload": "0.x.x",
     "debounce": "1.x.x",
     "del": "3.x.x",
-    "electron": "^1.8.4",
+    "electron": "^9.1.0",
     "gulp": "3.x.x",
     "gulp-babel": "^8.0.0",
     "gulp-bump": "2.x.x",
